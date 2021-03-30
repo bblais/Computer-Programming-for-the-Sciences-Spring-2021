@@ -74,6 +74,51 @@ results
 sim.run(0,7)
 
 
+# ## population data
+
+# In[26]:
+
+
+data=pd.read_csv('data/population_data.txt',sep='\t')
+
+
+# In[28]:
+
+
+data.head()
+
+
+# In[30]:
+
+
+x,y=array(data['Year']),array(data['World'])
+plot(x,y,'o')
+
+
+# In[50]:
+
+
+sim=Simulation()
+sim.add("p' = a*p",1,plot=True)
+sim.params(a=.1)
+sim.add_data(t=x,p=y,plot=True)
+sim.run(0,2000)
+
+
+# In[42]:
+
+
+results=fit(sim,
+   Parameter("a",value=0.001,min=0,max=0.1),
+           )
+
+
+# In[43]:
+
+
+sim.run(0,2000)
+
+
 # In[ ]:
 
 
