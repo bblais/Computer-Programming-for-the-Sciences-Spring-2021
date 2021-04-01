@@ -45,47 +45,39 @@ from lmfit import *
 # - plot rural slope (y-axis) vs urban slope (x-axis)
 # 
 
-# In[4]:
+# In[24]:
 
 
-from glob import glob
+data=pd.read_csv('data/time series data pandas.csv.zip')
+data
 
 
-# In[5]:
+# In[25]:
 
 
-time_series_folder='/Users/bblais/tex/bryant/spring_2021/computer_programming_378/Crichton Data/time series'
-fnames=glob(time_series_folder+'/*.csv')
-fnames=fnames[:10]
+station_info=pd.read_excel('data/station_info_updated.xlsx')
+station_info.shape
 
 
-# In[6]:
+# In[26]:
 
 
-len(fnames)
-
-
-# In[7]:
-
-
-fnames
-
-
-# In[8]:
-
-
-station_info=pd.read_excel('data/station_info.xlsx')
 station_info.head()
 
 
-# In[31]:
+# In[54]:
 
 
-def get_slope(fname,plotit=False):
-    data=pd.read_csv(fname)
-    data=data.dropna()
-    x_data=data['Year']
-    y_data=data['Temperature']
+station_info[station_info['Brightness']<10]
+
+
+# In[58]:
+
+
+def get_slope(name,plotit=False):
+    subdata=data[['time',name]].dropna()
+    x_data=subdata['time']
+    y_data=subdata[name]
     model=models.LinearModel()
     result=model.fit(y_data,x=x_data)
     
@@ -94,88 +86,136 @@ def get_slope(fname,plotit=False):
 
         x_fake=linspace(1960,2020,100)
         y_fake=result.eval(x=x_fake)
-        plot(x_fake,y_fake,'-')        
+        plot(x_fake,y_fake,'-')
+        title(name)
     
     return result.params['slope'].value
 
-def station_name_from_filename(filename):
-    import os
-    parts=os.path.split(filename)
-    base,ext=os.path.splitext(parts[-1])
-    return base
 
-def first_row(station_name):
-    if '.csv' in station_name:
-        station_name=station_name_from_filename(station_name)
-    
-    if not any(station_info['Station']==station_name):
-        return None
-    
-    return station_info[station_info['Station']==station_name].iloc[0]    
+def first_row(name):
+    return station_info[station_info['Station']==name].iloc[0]    
 
 
-# In[32]:
+# In[59]:
 
 
-station_name='CARACAS-LA CARLOTA'
-any(station_info['Station']==station_name)
+get_slope('MAZAR_I_SHARIF'),first_row('MAZAR_I_SHARIF')
 
 
-# In[33]:
+# In[61]:
 
 
-fnames=glob(time_series_folder+'/*.csv')
-station_names_with_data=[station_name_from_filename(filename) for filename in fnames]
-#fnames=fnames[:10]
+from tqdm import tqdm
 
 
-# In[36]:
+# In[62]:
 
 
 S=Storage()
+slope_data={}
 
-count=0
-for filename in fnames:
-    data=Struct()
-    data.slope=get_slope(filename)
-    data.station=station_name_from_filename(filename)
+for name in tqdm(station_info['Station']):
+    data1=Struct()
+    data1.slope=get_slope(name)
+    data1.station=name
     
-    row=first_row(data.station)
-    if row is None:
-        count+=1
-        continue
+    row=first_row(name)
     if row.Brightness>=10:
-        data.urban=True
+        data1.urban=True
     else:
-        data.urban=False
+        data1.urban=False
+        
+    data1.latitude=row.Latitude
+    data1.longitude=row.Longitude
     
-    S+=data,
+    slope_data[name]=data1
     
-print("Could not find info for ",count)
 
 
-# In[28]:
+# In[ ]:
 
 
-data.station
 
 
-# In[86]:
+
+# In[64]:
 
 
-first_row(station_name_from_filename(fnames[3]))
+all([slope_data[_].urban for _ in slope_data])
 
 
-# In[87]:
+# In[65]:
 
 
-first_row(fnames[3])
+def closest_rural(urban_name):
+    min_distance=1e500
+    min_name=None
+    
+    for name in station_info['Station']:
+        if slope_data[name].urban:
+            continue # skip the urbans
+            
+        x1,y1=slope_data[name].latitude,slope_data[name].longitude
+        x2,y2=slope_data[urban_name].latitude,slope_data[urban_name].longitude
+        distance=sqrt((x1-x2)**2+(y1-y2)**2)
+        
+        if distance<min_distance:
+            min_distance=distance
+            min_name=name
+            
+    return min_name
+    
 
 
-# In[84]:
+# In[73]:
 
 
-fnames[3]
+for name in tqdm(slope_data):
+        
+    if slope_data[name].urban:
+        rural_name=closest_rural(name)
+        slope_data[name].closest_rural_name=rural_name
+        slope_data[name].closest_rural_slope=slope_data[rural_name].slope
+    else:
+        continue
+        
+    
+    
+
+
+# In[74]:
+
+
+urban_slope_data=[slope_data[_] for _ in slope_data if slope_data[_].urban]
+
+
+# In[76]:
+
+
+urban_slope=array([slope_data[_].slope for _ in slope_data if slope_data[_].urban])
+nearby_rural_slope=array([slope_data[_].closest_rural_slope for _ in slope_data if slope_data[_].urban])
+rural_slope=array([slope_data[_].slope for _ in slope_data if not slope_data[_].urban])
+
+
+# In[ ]:
+
+
+histogram(urban_slope,500);
+histogram(rural_slope,500);
+xlim([-.1,.1])
+mean(urban_slope),mean(rural_slope)
+
+
+# In[ ]:
+
+
+figure(figsize=(8,8))
+plot(urban_slope,nearby_rural_slope,'o',alpha=0.2)
+axis('equal')
+plot([0,0],[-.7,.7],'k')
+plot([-.7,.7],[0,0],'k')
+xlim([-.3,.3])
+ylim([-.3,.3])
 
 
 # In[ ]:
