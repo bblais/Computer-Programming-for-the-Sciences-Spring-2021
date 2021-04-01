@@ -45,11 +45,17 @@ from lmfit import *
 # - plot rural slope (y-axis) vs urban slope (x-axis)
 # 
 
-# In[24]:
+# In[96]:
 
 
 data=pd.read_csv('data/time series data pandas.csv.zip')
 data
+
+
+# In[97]:
+
+
+#data.to_excel('test.xlsx')
 
 
 # In[25]:
@@ -183,12 +189,6 @@ for name in tqdm(slope_data):
     
 
 
-# In[74]:
-
-
-urban_slope_data=[slope_data[_] for _ in slope_data if slope_data[_].urban]
-
-
 # In[76]:
 
 
@@ -197,21 +197,44 @@ nearby_rural_slope=array([slope_data[_].closest_rural_slope for _ in slope_data 
 rural_slope=array([slope_data[_].slope for _ in slope_data if not slope_data[_].urban])
 
 
-# In[ ]:
+# In[98]:
+
+
+len(urban_slope)
+
+
+# In[102]:
 
 
 histogram(urban_slope,500);
 histogram(rural_slope,500);
 xlim([-.1,.1])
+xlabel('slope')
 mean(urban_slope),mean(rural_slope)
 
 
-# In[ ]:
+# In[103]:
 
 
 figure(figsize=(8,8))
-plot(urban_slope,nearby_rural_slope,'o',alpha=0.2)
+plot([0],[0],'o',alpha=0.2)
 axis('equal')
+xlabel('urban slope')
+ylabel('rural slope')
+plot([0,0],[-.7,.7],'k')
+plot([-.7,.7],[0,0],'k')
+xlim([-.3,.3])
+ylim([-.3,.3])
+
+
+# In[105]:
+
+
+figure(figsize=(8,8))
+plot(urban_slope,nearby_rural_slope,'o',alpha=0.1)
+axis('equal')
+xlabel('urban slope')
+ylabel('rural slope')
 plot([0,0],[-.7,.7],'k')
 plot([-.7,.7],[0,0],'k')
 xlim([-.3,.3])
