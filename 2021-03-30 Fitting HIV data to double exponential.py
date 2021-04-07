@@ -22,6 +22,13 @@ from lmfit import *
 # In[6]:
 
 
+model=models.LorentzianModel()
+model.param_names
+
+
+# In[6]:
+
+
 data=pd.read_csv('data/HIVseries.csv',header=None)
 data
 

@@ -7,7 +7,7 @@
 get_ipython().system('pip install "git+git://github.com/bblais/sci378" --upgrade')
 
 
-# In[2]:
+# In[1]:
 
 
 import sci378
