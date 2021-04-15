@@ -19,41 +19,41 @@ from sci378 import *
 from lmfit import *
 
 
-# In[6]:
+# In[4]:
 
 
 model=models.LorentzianModel()
 model.param_names
 
 
-# In[6]:
+# In[5]:
 
 
 data=pd.read_csv('data/HIVseries.csv',header=None)
 data
 
 
-# In[23]:
+# In[6]:
 
 
 t_data=array(data[0])
 V_data=array(data[1])
 
 
-# In[24]:
+# In[7]:
 
 
 plot(t_data,V_data,'o')
 
 
-# In[25]:
+# In[8]:
 
 
 def doubleexp(t,A=1,α=1,B=1,β=1):
     return A*exp(-α*t) + B*exp(-β*t)
 
 
-# In[27]:
+# In[9]:
 
 
 t_fake=linspace(0,7,100)
@@ -62,14 +62,14 @@ plot(t_fake,V_fake,'-')
 plot(t_data,V_data,'o')
 
 
-# In[59]:
+# In[10]:
 
 
 model=Model(doubleexp)
 model.param_names
 
 
-# In[64]:
+# In[11]:
 
 
 params=model.make_params()
@@ -79,7 +79,7 @@ params['β']=Parameter("β",min=0,value=1)
 params['B']=Parameter("B",min=0,value=25000)
 
 
-# In[65]:
+# In[12]:
 
 
 result = model.fit(V_data, params, t=t_data)
@@ -91,7 +91,7 @@ result = model.fit(V_data, params, t=t_data)
 
 
 
-# In[66]:
+# In[13]:
 
 
 result

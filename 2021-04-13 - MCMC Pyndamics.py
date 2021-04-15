@@ -25,7 +25,7 @@ xlabel('Days')
 ylabel('Height [cm]')
 
 
-# In[6]:
+# In[4]:
 
 
 sim=Simulation()
@@ -35,13 +35,13 @@ sim.add_data(t=t,h=h,plot=True)
 sim.run(80)
 
 
-# In[7]:
+# In[5]:
 
 
 from pyndamics3.mcmc import *
 
 
-# In[10]:
+# In[6]:
 
 
 model=MCMCModel(sim,
@@ -49,11 +49,30 @@ model=MCMCModel(sim,
                K=Uniform(50,500),)
 
 
-# In[11]:
+# In[7]:
 
 
 model.run_mcmc(300,repeat=3)
 model.plot_chains()
+
+
+# In[8]:
+
+
+samples=model.samples
+samples.shape
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
 
 
 # In[12]:
