@@ -1,32 +1,32 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[12]:
 
 
 get_ipython().run_line_magic('pylab', 'inline')
 
 
-# In[2]:
+# In[13]:
 
 
 from sci378 import *
 
 
-# In[3]:
+# In[14]:
 
 
 import lmfit
 
 
-# In[4]:
+# In[15]:
 
 
 data=pd.read_csv('data/linear_data.csv')
 data
 
 
-# In[5]:
+# In[16]:
 
 
 x=array(data['x'])
@@ -36,42 +36,51 @@ x,y
 
 # ## Fit with lmfit
 
-# In[6]:
+# In[17]:
 
 
 model=lmfit.models.LinearModel()
 
 
-# In[7]:
+# In[18]:
 
 
 results=model.fit(y,x=x)
 results
 
 
+# In[25]:
+
+
+model.independent_vars
+
+
 # ## Retry lmfit with mcmc
 
-# In[8]:
+# In[34]:
 
 
 def lnlike(data,**kwargs):
+    assert len(lmmodel.independent_vars)==1
+    
+    independent_vars={lmmodel.independent_vars[0]:x}
     x,y=data
     for key in kwargs:
         if key=='_σ':
             continue
         else:
             lmparams[key].value=kwargs[key]
-    ys=lmmodel.eval(lmparams,x=x)
+    ys=lmmodel.eval(lmparams,**independent_vars)
     return lognormalpdf(ys-y,0,kwargs['_σ'])
 
 
-# In[9]:
+# In[35]:
 
 
 from sci378.stats import *
 
 
-# In[10]:
+# In[36]:
 
 
 lmmodel=lmfit.models.LinearModel()
@@ -84,7 +93,7 @@ model=MCMCModel((x,y),lnlike,
                )
 
 
-# In[11]:
+# In[37]:
 
 
 model.run_mcmc(800,repeat=3)
