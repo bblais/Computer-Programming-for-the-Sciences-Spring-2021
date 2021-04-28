@@ -57,14 +57,14 @@ model.independent_vars
 
 # ## Retry lmfit with mcmc
 
-# In[34]:
+# In[38]:
 
 
 def lnlike(data,**kwargs):
     assert len(lmmodel.independent_vars)==1
     
-    independent_vars={lmmodel.independent_vars[0]:x}
     x,y=data
+    independent_vars={lmmodel.independent_vars[0]:x}
     for key in kwargs:
         if key=='_σ':
             continue
@@ -74,13 +74,13 @@ def lnlike(data,**kwargs):
     return lognormalpdf(ys-y,0,kwargs['_σ'])
 
 
-# In[35]:
+# In[39]:
 
 
 from sci378.stats import *
 
 
-# In[36]:
+# In[40]:
 
 
 lmmodel=lmfit.models.LinearModel()
@@ -93,20 +93,20 @@ model=MCMCModel((x,y),lnlike,
                )
 
 
-# In[37]:
+# In[41]:
 
 
 model.run_mcmc(800,repeat=3)
 model.plot_chains()
 
 
-# In[12]:
+# In[42]:
 
 
 model.plot_distributions()
 
 
-# In[13]:
+# In[43]:
 
 
 plot(x,y,'o')
@@ -116,11 +116,90 @@ y_fake=results.eval(x=x_fake)
 plot(x_fake,y_fake,'-')
 
 
-# In[14]:
+# In[44]:
 
 
 model.triangle_plot()
 
+
+# ## What if I do a custom function, and it uses $t$ as a variable?
+
+# In[45]:
+
+
+t=array(data['x'])
+V=array(data['y'])
+t,V
+
+
+# In[47]:
+
+
+def my_function(t,a=1,b=1,c=1):
+    return a*t**2 + b*t + c
+
+
+# In[50]:
+
+
+model=lmfit.Model(my_function)
+
+
+# In[51]:
+
+
+results=model.fit(V,t=t)
+results
+
+
+# In[52]:
+
+
+lmmodel=lmfit.Model(my_function)
+lmparams=lmmodel.make_params()
+
+model=MCMCModel((t,V),lnlike,
+                a=Uniform(-50,50),
+                b=Uniform(-50,50),
+                c=Uniform(-50,50),
+                _σ=Jeffreys(),  # need to define this even though it isn't in your function
+               )
+
+
+# In[53]:
+
+
+model.run_mcmc(800,repeat=3)
+model.plot_chains()
+
+
+# In[54]:
+
+
+model.plot_distributions()
+
+
+# In[56]:
+
+
+plot(t,V,'o')
+
+t_fake=linspace(-6,6,20)
+V_fake=results.eval(t=t_fake)
+plot(t_fake,V_fake,'-')
+
+
+# In[ ]:
+
+
+plot(t,V,'o')
+
+t_fake=linspace(-6,6,20)
+V_fake=results.eval(t=t_fake)
+plot(t_fake,V_fake,'-')
+
+
+# ## still to do - get the functions to show the best-fit curves (95% levels) from mcmc
 
 # In[ ]:
 

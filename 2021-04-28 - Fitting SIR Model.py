@@ -10,7 +10,7 @@ from pyndamics3 import Simulation
 
 # <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/29728a7d4bebe8197dca7d873d81b9dce954522e">
 
-# In[2]:
+# In[20]:
 
 
 sim=Simulation()
@@ -23,14 +23,14 @@ sim.params(β=.5,γ=.1)
 sim.run(90)
 
 
-# In[4]:
+# In[21]:
 
 
 t_data=[10,20,30,40,50]
 I_data=[30,45,18,8,2]
 
 
-# In[19]:
+# In[22]:
 
 
 sim=Simulation()
@@ -44,13 +44,13 @@ sim.params(β=.3,γ=.1)
 sim.run(90)
 
 
-# In[7]:
+# In[23]:
 
 
 from pyndamics3.mcmc import *
 
 
-# In[8]:
+# In[24]:
 
 
 model=MCMCModel(sim,
@@ -58,14 +58,14 @@ model=MCMCModel(sim,
                γ=Uniform(0,2),)
 
 
-# In[9]:
+# In[25]:
 
 
-model.run_mcmc(300,repeat=3)
+model.run_mcmc(800,repeat=4)
 model.plot_chains()
 
 
-# In[10]:
+# In[26]:
 
 
 model.plot_distributions()
