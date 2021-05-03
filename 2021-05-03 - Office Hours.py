@@ -74,6 +74,13 @@ sim.add_data(t=t_data,x=y_data,plot=True)
 sim.run(0,90)
 
 
+# In[28]:
+
+
+plot(t_data,y_data,'-o')
+plot(sim.t,sim.x,'-')
+
+
 # In[ ]:
 
 
