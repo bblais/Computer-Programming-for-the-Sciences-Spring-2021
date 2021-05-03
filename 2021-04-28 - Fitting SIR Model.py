@@ -10,7 +10,7 @@ from pyndamics3 import Simulation
 
 # <img src="https://wikimedia.org/api/rest_v1/media/math/render/svg/29728a7d4bebe8197dca7d873d81b9dce954522e">
 
-# In[20]:
+# In[2]:
 
 
 sim=Simulation()
@@ -23,14 +23,14 @@ sim.params(β=.5,γ=.1)
 sim.run(90)
 
 
-# In[21]:
+# In[3]:
 
 
 t_data=[10,20,30,40,50]
 I_data=[30,45,18,8,2]
 
 
-# In[22]:
+# In[4]:
 
 
 sim=Simulation()
@@ -44,13 +44,13 @@ sim.params(β=.3,γ=.1)
 sim.run(90)
 
 
-# In[23]:
+# In[5]:
 
 
 from pyndamics3.mcmc import *
 
 
-# In[24]:
+# In[17]:
 
 
 model=MCMCModel(sim,
@@ -58,17 +58,36 @@ model=MCMCModel(sim,
                γ=Uniform(0,2),)
 
 
-# In[25]:
+# In[18]:
 
 
 model.run_mcmc(800,repeat=4)
 model.plot_chains()
 
 
-# In[26]:
+# In[19]:
 
 
 model.plot_distributions()
+
+
+# In[20]:
+
+
+best_estimates=model.best_estimates()
+best_estimates
+
+
+# In[21]:
+
+
+best_estimates['β'][1]  # median
+
+
+# In[22]:
+
+
+best_estimates['β'][0]  # 2.5% level
 
 
 # In[ ]:
