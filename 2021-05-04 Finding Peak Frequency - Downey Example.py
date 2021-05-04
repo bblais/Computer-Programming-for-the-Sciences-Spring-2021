@@ -173,6 +173,44 @@ idx2=argmax(p2)
 T2[idx2]
 
 
+# In[18]:
+
+
+t=linspace(0,500,1000)
+d3=166/2
+y=cos(pi*t/d3)
+plot(t,y)
+
+
+# In[19]:
+
+
+t=linspace(0,500,1000)
+c3=148/2
+y=cos(pi*t/c3)
+plot(t,y)
+
+
+# In[21]:
+
+
+t=linspace(0,5000,1000)
+c3=148/2
+d3=166/2
+y=.5*cos(pi*t/c3) + cos(pi*t/d3)
+plot(t,y)
+
+
+# In[23]:
+
+
+t=linspace(0,5000,1000)
+c3=3000/2
+d3=166/2
+y=.5*cos(pi*t/c3) + cos(pi*t/d3)
+plot(t,y)
+
+
 # In[ ]:
 
 

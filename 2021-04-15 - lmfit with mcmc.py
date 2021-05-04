@@ -63,7 +63,7 @@ model.independent_vars
 def lnlike(data,**kwargs):
     assert len(lmmodel.independent_vars)==1
     
-    x,y=data
+    x,y=[array(_) for _ in data]
     independent_vars={lmmodel.independent_vars[0]:x}
     for key in kwargs:
         if key=='_σ':
