@@ -7,7 +7,7 @@
 get_ipython().run_line_magic('pylab', 'inline')
 
 
-# In[4]:
+# In[2]:
 
 
 from sci378.stats import *
@@ -49,19 +49,19 @@ from sci378.stats import *
 # P(\mu | {x_i}) \sim \text{Normal}(\bar{x},\sigma/\sqrt{N})
 # $$
 
-# In[5]:
+# In[3]:
 
 
 (0.5)**2000
 
 
-# In[6]:
+# In[4]:
 
 
 2000*log10(0.5)
 
 
-# In[7]:
+# In[5]:
 
 
 def lnlike(data,μ):
@@ -70,7 +70,7 @@ def lnlike(data,μ):
     
 
 
-# In[12]:
+# In[6]:
 
 
 data=array([12.0,14,16])
@@ -80,7 +80,7 @@ model = MCMCModel(data, lnlike,
                  )
 
 
-# In[13]:
+# In[7]:
 
 
 model.run_mcmc(800,repeat=3)
@@ -142,7 +142,7 @@ model.plot_distributions()
 # P(\theta | h,N) \sim Bernoulli(\theta,h,N)
 # $$
 
-# In[23]:
+# In[8]:
 
 
 def lnlike(data,θ):
@@ -150,23 +150,23 @@ def lnlike(data,θ):
     return logbernoullipdf(θ,h,N)
 
 
-# In[24]:
+# In[15]:
 
 
-data=3,12
+data=300,1200
 model=MCMCModel(data,lnlike,
                θ=Uniform(0,1),
                )
 
 
-# In[25]:
+# In[16]:
 
 
 model.run_mcmc(800,repeat=3)
 model.plot_chains()
 
 
-# In[26]:
+# In[17]:
 
 
 model.plot_distributions()

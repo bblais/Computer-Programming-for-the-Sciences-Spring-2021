@@ -7,7 +7,7 @@
 get_ipython().run_line_magic('pylab', 'inline')
 
 
-# In[3]:
+# In[2]:
 
 
 from lmfit import *
@@ -15,7 +15,7 @@ from lmfit import *
 
 # See: https://lmfit.github.io/lmfit-py/builtin_models.html  for more examples
 
-# In[14]:
+# In[3]:
 
 
 x_data,y_data=(array([-10.        ,  -8.94736842,  -7.89473684,  -6.84210526,
@@ -30,7 +30,7 @@ x_data,y_data=(array([-10.        ,  -8.94736842,  -7.89473684,  -6.84210526,
          62.75223289,  58.16212626, 111.04251023,  83.52494712]))
 
 
-# In[15]:
+# In[4]:
 
 
 plot(x_data,y_data,'o')
@@ -38,7 +38,7 @@ plot(x_data,y_data,'o')
 
 # ## Step 1 - define the function
 
-# In[4]:
+# In[5]:
 
 
 def quad(x,a=1,b=1,c=1):
@@ -47,19 +47,19 @@ def quad(x,a=1,b=1,c=1):
 
 # ## Step 2 - define the model and construct the parameter list
 
-# In[16]:
+# In[6]:
 
 
 qmodel=Model(quad)
 
 
-# In[17]:
+# In[7]:
 
 
 qmodel.param_names
 
 
-# In[18]:
+# In[8]:
 
 
 params=qmodel.make_params()
@@ -68,7 +68,7 @@ params
 
 # ## Step 3 - modify the parameter list (min, max, etc...) as needed
 
-# In[19]:
+# In[9]:
 
 
 params['a']=Parameter("a",min=0,value=0.5)
@@ -76,13 +76,67 @@ params['a']=Parameter("a",min=0,value=0.5)
 
 # ## Step 4 - do the fit, look at the values, etc...
 
-# In[21]:
+# In[36]:
 
 
 result = qmodel.fit(y_data, params, x=x_data)
 
 
+# In[12]:
+
+
+type(result)
+
+
+# In[16]:
+
+
+print(result.fit_report())
+
+
+# In[28]:
+
+
+from IPython.display import display, Markdown,HTML
+
+
 # In[22]:
+
+
+display(Markdown(result.fit_report()))
+
+
+# In[23]:
+
+
+result.fit_report()
+
+
+# In[31]:
+
+
+from markdown import markdown
+
+
+# In[34]:
+
+
+display(HTML(markdown("# header\nsomething else")))
+
+
+# In[39]:
+
+
+import pandas as pd
+
+
+# In[51]:
+
+
+pd.DataFrame( ( ('fitting method','leastsq'), ('func evals',17) ) ,columns=[' ','  '],index=[' ','  '])
+
+
+# In[11]:
 
 
 result
